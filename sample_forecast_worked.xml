@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<dwml version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://graphical.weather.gov/xml/DWMLgen/schema/DWML.xsd">
+  <head>
+    <product srsName="WGS 1984" concise-name="dwmlByDay" operational-mode="official">
+      <title>NOAA's National Weather Service Forecast by 12 Hour Period</title>
+      <field>meteorological</field>
+      <category>forecast</category>
+      <creation-date refresh-frequency="PT1H">2019-06-21T12:15:03Z</creation-date>
+    </product>
+    <source>
+      <more-information>https://graphical.weather.gov/xml/</more-information>
+      <production-center>Meteorological Development Laboratory<sub-center>Product Generation Branch</sub-center></production-center>
+      <disclaimer>http://www.nws.noaa.gov/disclaimer.html</disclaimer>
+      <credit>https://www.weather.gov/</credit>
+      <credit-logo>https://www.weather.gov/logorequest</credit-logo>
+      <feedback>https://www.weather.gov/contact</feedback>
+    </source>
+  </head>
+  <data>
+    <location>
+      <location-key>point1</location-key>
+      <point latitude="41.89" longitude="-71.39"/>
+    </location>
+    <moreWeatherInformation applicable-location="point1">https://forecast-v3.weather.gov/point/41.89,-71.39</moreWeatherInformation>
+    <time-layout time-coordinate="local" summarization="12hourly">
+      <layout-key>k-p24h-n2-1</layout-key>
+      <start-valid-time period-name="Today">2019-06-21T06:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-21T18:00:00-04:00</end-valid-time>
+      <start-valid-time period-name="Tomorrow">2019-06-22T06:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-22T18:00:00-04:00</end-valid-time>
+    </time-layout>
+    <time-layout time-coordinate="local" summarization="12hourly">
+      <layout-key>k-p24h-n2-2</layout-key>
+      <start-valid-time period-name="Overnight">2019-06-20T18:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-21T06:00:00-04:00</end-valid-time>
+      <start-valid-time period-name="Friday Night">2019-06-21T18:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-22T06:00:00-04:00</end-valid-time>
+    </time-layout>
+    <time-layout time-coordinate="local" summarization="12hourly">
+      <layout-key>k-p12h-n4-3</layout-key>
+      <start-valid-time period-name="Thursday Night">2019-06-20T18:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-21T06:00:00-04:00</end-valid-time>
+      <start-valid-time period-name="Friday">2019-06-21T06:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-21T18:00:00-04:00</end-valid-time>
+      <start-valid-time period-name="Friday Night">2019-06-21T18:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-22T06:00:00-04:00</end-valid-time>
+      <start-valid-time period-name="Saturday">2019-06-22T06:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-22T18:00:00-04:00</end-valid-time>
+    </time-layout>
+    <time-layout time-coordinate="local" summarization="12hourly">
+      <layout-key>k-p2d-n1-4</layout-key>
+      <start-valid-time>2019-06-20T18:00:00-04:00</start-valid-time>
+      <end-valid-time>2019-06-22T18:00:00-04:00</end-valid-time>
+    </time-layout>
+    <parameters applicable-location="point1">
+      <temperature type="maximum" units="Fahrenheit" time-layout="k-p24h-n2-1">
+        <name>Daily Maximum Temperature</name>
+        <value>70</value>
+        <value>78</value>
+      </temperature>
+      <temperature type="minimum" units="Fahrenheit" time-layout="k-p24h-n2-2">
+        <name>Daily Minimum Temperature</name>
+        <value>64</value>
+        <value>59</value>
+      </temperature>
+      <probability-of-precipitation type="12 hour" units="percent" time-layout="k-p12h-n4-3">
+        <name>12 Hourly Probability of Precipitation</name>
+        <value>100</value>
+        <value>86</value>
+        <value>11</value>
+        <value>22</value>
+      </probability-of-precipitation>
+      <weather time-layout="k-p12h-n4-3">
+        <name>Weather Type, Coverage, and Intensity</name>
+        <weather-conditions xsi:nil="true"/>
+        <weather-conditions weather-summary="Rain Showers">
+          <value coverage="definitely" intensity="light" weather-type="rain showers" qualifier="none"/>
+          <value coverage="patchy" intensity="none" additive="and" weather-type="fog" qualifier="none"/>
+        </weather-conditions>
+        <weather-conditions weather-summary="Partly Cloudy"/>
+        <weather-conditions weather-summary="Slight Chance Rain Showers">
+          <value coverage="slight chance" intensity="light" weather-type="rain showers" qualifier="none"/>
+        </weather-conditions>
+      </weather>
+      <conditions-icon type="forecast-NWS" time-layout="k-p12h-n4-3">
+        <name>Conditions Icons</name>
+        <icon-link xsi:nil="true"/>
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/hi_shwrs90.jpg</icon-link>
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/nsct.jpg</icon-link>
+        <icon-link>http://www.nws.noaa.gov/weather/images/fcicons/shra20.jpg</icon-link>
+      </conditions-icon>
+      <hazards time-layout="k-p2d-n1-4">
+        <name>Watches, Warnings, and Advisories</name>
+        <hazard-conditions xsi:nil="true"/>
+      </hazards>
+    </parameters>
+  </data>
+</dwml>
