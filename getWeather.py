@@ -19,6 +19,7 @@ forecastURL = 'http://graphical.weather.gov/xml/sample_products/browser_interfac
 
 imgnamesday = {
 'Fog':'20',
+'Patchy Fog':'20',
 'Fog/Mist':'20',
 'A Few Clouds':'34',
 'A Few Clouds and Breezy':'23',
@@ -80,6 +81,7 @@ imgnamesday = {
 
 imgnamesnight = {
 'Fog':'20',
+'Patchy Fog':'20',
 'Fog/Mist':'20',
 'A Few Clouds':'29_2',
 'A Few Clouds and Breezy':'23',
