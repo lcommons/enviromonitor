@@ -211,7 +211,7 @@ for i in range(4):
 #        period[i]['weather'] = ''
 #        period[i]['chance'] = ''
 #    el
-    if conditions[i].find('value') == None OR 'Fog' in conditions[i].find('value'):
+    if conditions[i].find('value') == None or 'Fog' in conditions[i].find('value'):
         print(conditions[i].get('weather-summary'))
         if conditions[i].get('weather-summary') == None:
             period[i]['weather'] = '' #TODO add default weather icon (sunny/clear) if no forecast is provided
