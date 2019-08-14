@@ -22,7 +22,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/refresh', function (req, res) {
-    exec('getWeather.py', (err, stdout, stderr) => {
+    exec('./getWeather.py', (err, stdout, stderr) => {
 	if (err) {
 	    console.error(err);
 	    return;
