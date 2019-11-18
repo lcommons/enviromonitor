@@ -1,3 +1,4 @@
+import pymysql
 import serial
 from datetime import datetime
 from sense_hat import SenseHat
@@ -79,6 +80,32 @@ htmlstring = "<html><head><title>Air Temp, Humidty, Pressure and Quality</title>
 <tr><th>pmtwofive</th><td>###pmtwofive###</td></tr>\
 <tr><th>pmten</th><td>###pmten###</td></tr>\
 </table></body></html>"
+
+def writetodb():
+
+    user="admin"
+    password="xgKItSCvK6Fs5DtSov7w"
+    endpoint="database-1.cluster-cx7osshnlikw.us-east-2.rds.amazonaws.com"
+    #endpoint="172.31.0.0/20"    
+    #database="database-1"#"environment_data"
+    database="environment_data"
+    
+    # Open database connection
+    db = pymysql.connect(endpoint,user,password,database)
+    
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+
+    # execute SQL query using execute() method.
+    cursor.execute("SELECT * FROM observations")
+    
+    # Fetch a single row using fetchone() method.
+    data = cursor.fetchone()
+    print ("one observation : %s " % data)
+    
+    # disconnect from server
+    db.close()
     
 if __name__ == '__main__':
-    writehtml()
+    #writehtml()
+    writetodb()
