@@ -1,5 +1,7 @@
 import pymysql
 import serial
+import json
+import requests
 from datetime import datetime
 from sense_hat import SenseHat
 '''
@@ -82,7 +84,9 @@ htmlstring = "<html><head><title>Air Temp, Humidty, Pressure and Quality</title>
 </table></body></html>"
 
 def writetodb():
-
+    '''
+    This function is deprecated. Use writetoREST() instead.
+    '''
     user="admin"
     password="xgKItSCvK6Fs5DtSov7w"
     endpoint="database-1.cluster-cx7osshnlikw.us-east-2.rds.amazonaws.com"
@@ -105,7 +109,92 @@ def writetodb():
     
     # disconnect from server
     db.close()
-    
+
+'''
+|----+----------+----------------------------------------------------------------------|
+| id | name     | description                                                          |
+|----+----------+----------------------------------------------------------------------|
+|  1 | tempf    | Temperature (fahrenheit)                                             |
+|  2 | tempc    | Temperature (celsius)                                                |
+|  3 | humidity  | Humidity                                                             |
+|  4 | pressure | Atmospheric Pressure                                                 |
+|  5 | pm2.5    | Particulate matter (smaller than 2.5 microns) concentration in mg/m3 |
+|  6 | pm10     | Particulate matter (smaller than 10 microns) concentration in mg/m3  |
+|----+----------+----------------------------------------------------------------------|
+'''
+datatypemap = {
+        'tempf':1,
+        'tempc':2,
+        'humidity':3,
+        'pressure':4,
+        'pmtwofive':5,
+        'pmten':6
+        }
+
+def writetoREST():
+    '''
+    sample JSON payload:
+    {
+	"add_date": "2019-11-22T23:20:05.88Z",
+	"obs_type": 6,
+	"sensor": 1,
+	"location": 1,
+	"value": 1.2
+    }
+    '''
+    data ={
+        "add_date": "2019-11-24T23:20:05.88Z",
+	"obs_type": 6,
+	"sensor": 1,
+	"location": 1,
+	"value": 1.2
+    }
+    '''
+    {'pressure': 1010.6982421875, 'temp': 92.24471817016601, 'humidity': 26.783153533935547, 'pmtwofive': 3.7, 'pmten': 5.6}
+POST response:  <Response [201]>
+    '''
+    sensordata = getdata()
+    data["add_date"] = str(datetime.now())
+    # write temp
+    data["obs_type"] = datatypemap["tempf"]
+    data["value"] = sensordata["temp"]
+    writePost(data)
+    # write pressure
+    data["obs_type"] = datatypemap["pressure"]
+    data["value"] = sensordata["pressure"]
+    writePost(data)
+    # write humidity
+    data["obs_type"] = datatypemap["humidity"]
+    data["value"] = sensordata["humidity"]
+    writePost(data)
+    # write pmtwofive
+    data["obs_type"] = datatypemap["pmtwofive"]
+    data["value"] = sensordata["pmtwofive"]
+    writePost(data)
+    # write pmten
+    data["obs_type"] = datatypemap["pmten"]
+    data["value"] = sensordata["pmten"]
+    writePost(data)
+
+
+# The http headers that will be sent with each POST
+headers = {'Content-Type': 'application/json'}
+# The url for the REST service
+endpointbase = 'http://node-express-env.quqvup2twn.us-east-2.elasticbeanstalk.com/'
+# the url for the specific REST operation 
+endpoint = endpointbase + 'add_observation'
+
+def writePost(jsondata):
+    '''
+    writes the jsondata values to the REST service
+    '''
+    response = requests.post(endpoint, headers=headers, json=jsondata)
+    print('POST response: ',response)    
+    return response
+
 if __name__ == '__main__':
-    #writehtml()
-    writetodb()
+    # note that each write*** function will make its own getdata() call
+    # but I don't care.
+    writehtml()
+    writetoREST()
+
