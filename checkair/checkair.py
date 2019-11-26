@@ -4,6 +4,8 @@ import json
 import requests
 from datetime import datetime
 from sense_hat import SenseHat
+import checktemp
+
 '''
 This file runs on a raspberry pi with a sense hat AND an air quality sensor.
 This file has two functions.
@@ -20,59 +22,99 @@ Finally, a cron job runs writehtml every five minutes.
 */5 * * * *  python3 checkair.py
 '''
 
+datadict = {};
+'''    
+def getsensehatdata():
+   sense = SenseHat()
+   sense.clear()
+   pressure = sense.get_pressure()
+   temp = sense.get_temperature()
+   temp = 9.0/5.0 * temp + 32
+   humidity = sense.get_humidity()
+   #print("humidity: ", humidity)                                                                                             
+   #print("temp : ", temp)                                                                                                    
+   #print("pressure: ", pressure)
+   datadict["pressure"] = pressure
+   datadict["temp"] = temp
+   datadict["humidity"] = humidity
+''' 
+def getppmdata():
+   data = []
+   ser = serial.Serial('/dev/ttyUSB0')
+   for index in range(0,10):
+      datum = ser.read()
+      data.append(datum)
+      pmtwofive = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
+      pmten = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
+   #print("pmtwofive: ", pmtwofive)
+   #print("pmten: ", pmten)
+   datadict["pmtwofive"] = pmtwofive
+   datadict["pmten"] = pmten
 
+def gettempdata(f=True):
+   deg_c, deg_f = checktemp.read_temp()
+   if (f):
+      datadict["temp"] = deg_f
+   else:
+      datadict["temp"] = deg_c
+      
 def getdata():
-    sense = SenseHat()
-    sense.clear()
-    pressure = sense.get_pressure()
-    temp = sense.get_temperature()
-    temp = 9.0/5.0 * temp + 32
-    humidity = sense.get_humidity()
-    #print("humidity: ", humidity)
-    #print("temp : ", temp)
-    #print("pressure: ", pressure)
-    
-    data = []
-    ser = serial.Serial('/dev/ttyUSB0')
-    for index in range(0,10):
-        datum = ser.read()
-        data.append(datum)
-        
-    #print("data: ",data)
-    pmtwofive = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
-    pmten = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
-        
-    #print("pmtwofive: ", pmtwofive)
-    #print("pmten: ", pmten)
-
-    datadic = {};
-    datadic["pressure"] = pressure
-    datadic["temp"] = temp
-    datadic["humidity"] = humidity
-    datadic["pmtwofive"] = pmtwofive
-    datadic["pmten"] = pmten
-
-    return datadic
+   sense = SenseHat()
+   sense.clear()
+   pressure = sense.get_pressure()
+   temp = sense.get_temperature()
+   temp = 9.0/5.0 * temp + 32
+   humidity = sense.get_humidity()
+   #print("humidity: ", humidity)
+   #print("temp : ", temp)
+   #print("pressure: ", pressure)
+   
+   data = []
+   ser = serial.Serial('/dev/ttyUSB0')
+   for index in range(0,10):
+      datum = ser.read()
+      data.append(datum)
+      
+      #print("data: ",data)
+   pmtwofive = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
+   pmten = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
+   
+   #print("pmtwofive: ", pmtwofive)
+   #print("pmten: ", pmten)
+   
+   datadic = {};
+   datadic["pressure"] = pressure
+   datadic["temp"] = temp
+   datadic["humidity"] = humidity
+   datadic["pmtwofive"] = pmtwofive
+   datadic["pmten"] = pmten
+   
+   return datadic
 
 def writehtml():
-    path = "/var/www/html/index.html"
-    
-    data = getdata()
-    #print("getdata: ",data)
-    newhtmlstring = htmlstring
-    
-    newhtmlstring = newhtmlstring.replace("###datetime###",str(datetime.now()))
-    newhtmlstring = newhtmlstring.replace("###temp###",str(data["temp"]))
-    newhtmlstring = newhtmlstring.replace("###pressure###",str(data["pressure"]))
-    newhtmlstring = newhtmlstring.replace("###humidity###",str(data["humidity"]))
-    newhtmlstring = newhtmlstring.replace("###pmtwofive###",str(data["pmtwofive"]))
-    newhtmlstring = newhtmlstring.replace("###pmten###",str(data["pmten"]))
-    
-    #print(newhtmlstring)
-    homepage = open(path,'w')
-    homepage.write(newhtmlstring)
-    homepage.close()
-    
+   path = "/var/www/html/index.html"
+   
+   #data = getdata()
+   getppmdata()
+   gettempdata()
+   
+   #print("getdata: ",data)
+   newhtmlstring = htmlstring
+   
+   newhtmlstring = newhtmlstring.replace("###datetime###",str(datetime.now()))
+   newhtmlstring = newhtmlstring.replace("###temp###",str(datadict["temp"]))
+   #newhtmlstring = newhtmlstring.replace("###pressure###",str(datadict["pressure"]))
+   newhtmlstring = newhtmlstring.replace("###pressure###", 'n/a')
+   #newhtmlstring = newhtmlstring.replace("###humidity###",str(datadict["humidity"]))
+   newhtmlstring = newhtmlstring.replace("###humidity###",'n/a')
+   newhtmlstring = newhtmlstring.replace("###pmtwofive###",str(datadict["pmtwofive"]))
+   newhtmlstring = newhtmlstring.replace("###pmten###",str(datadict["pmten"]))
+   
+   #print(newhtmlstring)
+   homepage = open(path,'w')
+   homepage.write(newhtmlstring)
+   homepage.close()
+   
 htmlstring = "<html><head><title>Air Temp, Humidty, Pressure and Quality</title></head>\
 <body><h1>Air Temp, Humidty, Pressure and Quality</h1>\
 <table><tr><th>Date / Time</th><td>###datetime###</td></tr>\
@@ -143,22 +185,26 @@ def writetoREST():
     }
     '''
     data ={
-        "add_date": "2019-11-24T23:20:05.88Z",
+        "add_date": '',#"2019-11-24T23:20:05.88Z",
 	"obs_type": 6,
 	"sensor": 1,
 	"location": 1,
-	"value": 1.2
+	"value": 0#1.2
     }
     '''
     {'pressure': 1010.6982421875, 'temp': 92.24471817016601, 'humidity': 26.783153533935547, 'pmtwofive': 3.7, 'pmten': 5.6}
 POST response:  <Response [201]>
     '''
-    sensordata = getdata()
+    #sensordata = getdata()
+    getppmdata()
+    gettempdata()
+
     data["add_date"] = str(datetime.now())
     # write temp
     data["obs_type"] = datatypemap["tempf"]
-    data["value"] = sensordata["temp"]
+    data["value"] = datadict['temp']#gettemp()#sensordata["temp"]
     writePost(data)
+    '''
     # write pressure
     data["obs_type"] = datatypemap["pressure"]
     data["value"] = sensordata["pressure"]
@@ -167,13 +213,14 @@ POST response:  <Response [201]>
     data["obs_type"] = datatypemap["humidity"]
     data["value"] = sensordata["humidity"]
     writePost(data)
+    '''
     # write pmtwofive
     data["obs_type"] = datatypemap["pmtwofive"]
-    data["value"] = sensordata["pmtwofive"]
+    data["value"] = datadict["pmtwofive"]
     writePost(data)
     # write pmten
     data["obs_type"] = datatypemap["pmten"]
-    data["value"] = sensordata["pmten"]
+    data["value"] = datadict["pmten"]
     writePost(data)
 
 
@@ -192,9 +239,19 @@ def writePost(jsondata):
     print('POST response: ',response)    
     return response
 
+def gettemp(f=True):
+    deg_c, deg_f = checktemp.read_temp()
+    if (f):
+        return deg_f
+        #print(" ffffff: ",deg_f)
+    else:
+        return deg_c
+        #print("cccccc: ",deg_c)
+
 if __name__ == '__main__':
     # note that each write*** function will make its own getdata() call
     # but I don't care.
     writehtml()
     writetoREST()
-
+    #gettemp()
+    #print(checktemp.read_temp())
