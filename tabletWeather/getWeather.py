@@ -279,7 +279,7 @@ f.write("<span class='period2'><div class='label'>"+period[1]['name']+ "</div>"+
 f.write("<div id='day2'><span class='period1'><div class='label'>"+period[2]['name']+ "</div>"+ period[2]['icon'] +period[2]['chance'] +"<div class='temp'>"+period[2]['temp']+"&deg;</div></span>")
 f.write("<span class='period2'><div class='label'>"+period[3]['name']+ "</div>"+ period[3]['icon'] +period[3]['chance'] +"<div class='temp'>"+ period[3]['temp']+"&deg;</div></span></div>")
 f.write("<div class='footer'>Data: "+currentTime+ "; Page " + datetime.now().strftime('%b %d %Y, %H:%M %p') + "</div>")
-f.write("<div class='footer'><pre>;debugOn (press enter)<br/>~disableScreensaver (press enter)<br/>;debugOff (press enter)</pre></div>")
+f.write("<div class='footer'>At the Kindle Search Screen:<br/><pre>;debugOn (press enter)<br/>~disableScreensaver (press enter)<br/>;debugOff (press enter)</pre></div>")
 f.write("</body></html>")
 f.close()
 #print(then.astimezone(pytz.timezone('US/Eastern')))
