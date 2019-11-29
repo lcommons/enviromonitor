@@ -23,7 +23,7 @@ Finally, a cron job runs writehtml every five minutes.
 '''
 
 datadict = {};
-'''    
+    
 def getsensehatdata():
    sense = SenseHat()
    sense.clear()
@@ -37,7 +37,7 @@ def getsensehatdata():
    datadict["pressure"] = pressure
    datadict["temp"] = temp
    datadict["humidity"] = humidity
-''' 
+
 def getppmdata():
    data = []
    ser = serial.Serial('/dev/ttyUSB0')
@@ -54,9 +54,9 @@ def getppmdata():
 def gettempdata(f=True):
    deg_c, deg_f = checktemp.read_temp()
    if (f):
-      datadict["temp"] = deg_f
+      datadict["temp2"] = deg_f
    else:
-      datadict["temp"] = deg_c
+      datadict["temp2"] = deg_c
       
 def getdata():
    sense = SenseHat()
@@ -95,6 +95,7 @@ def writehtml():
    path = "/var/www/html/index.html"
    
    #data = getdata()
+   getsensehatdata()
    getppmdata()
    gettempdata()
    
@@ -103,10 +104,11 @@ def writehtml():
    
    newhtmlstring = newhtmlstring.replace("###datetime###",str(datetime.now()))
    newhtmlstring = newhtmlstring.replace("###temp###",str(datadict["temp"]))
-   #newhtmlstring = newhtmlstring.replace("###pressure###",str(datadict["pressure"]))
-   newhtmlstring = newhtmlstring.replace("###pressure###", 'n/a')
-   #newhtmlstring = newhtmlstring.replace("###humidity###",str(datadict["humidity"]))
-   newhtmlstring = newhtmlstring.replace("###humidity###",'n/a')
+   newhtmlstring = newhtmlstring.replace("###temp2###",str(datadict["temp2"]))
+   newhtmlstring = newhtmlstring.replace("###pressure###",str(datadict["pressure"]))
+#   newhtmlstring = newhtmlstring.replace("###pressure###", 'n/a')
+   newhtmlstring = newhtmlstring.replace("###humidity###",str(datadict["humidity"]))
+#   newhtmlstring = newhtmlstring.replace("###humidity###",'n/a')
    newhtmlstring = newhtmlstring.replace("###pmtwofive###",str(datadict["pmtwofive"]))
    newhtmlstring = newhtmlstring.replace("###pmten###",str(datadict["pmten"]))
    
@@ -119,6 +121,7 @@ htmlstring = "<html><head><title>Air Temp, Humidty, Pressure and Quality</title>
 <body><h1>Air Temp, Humidty, Pressure and Quality</h1>\
 <table><tr><th>Date / Time</th><td>###datetime###</td></tr>\
 <tr><th>Temp (f)</th><td>###temp###</td></tr>\
+<tr><th>Temp 2 (f)</th><td>###temp2###</td></tr>\
 <tr><th>pressure</th><td>###pressure###</td></tr>\
 <tr><th>humidity</th><td>###humidity###</td></tr>\
 <tr><th>pmtwofive</th><td>###pmtwofive###</td></tr>\
@@ -174,16 +177,6 @@ datatypemap = {
         }
 
 def writetoREST():
-    '''
-    sample JSON payload:
-    {
-	"add_date": "2019-11-22T23:20:05.88Z",
-	"obs_type": 6,
-	"sensor": 1,
-	"location": 1,
-	"value": 1.2
-    }
-    '''
     data ={
         "add_date": '',#"2019-11-24T23:20:05.88Z",
 	"obs_type": 6,
@@ -196,24 +189,31 @@ def writetoREST():
 POST response:  <Response [201]>
     '''
     #sensordata = getdata()
+    getsensehatdata()
     getppmdata()
     gettempdata()
 
-    data["add_date"] = str(datetime.now())
-    # write temp
+    data["add_date"] = str(datetime.now())    # write temp from external temp sensor
+    data["sensor"] = 2 # the external temp sensor
+    data["obs_type"] = datatypemap["tempf"]
+    data["value"] = datadict['temp2']#gettemp()#sensordata["temp"]
+    writePost(data)
+
+    # write temp from sensehat
+    data["sensor"] = 1
     data["obs_type"] = datatypemap["tempf"]
     data["value"] = datadict['temp']#gettemp()#sensordata["temp"]
     writePost(data)
-    '''
+    
     # write pressure
     data["obs_type"] = datatypemap["pressure"]
-    data["value"] = sensordata["pressure"]
+    data["value"] = datadict["pressure"]
     writePost(data)
     # write humidity
     data["obs_type"] = datatypemap["humidity"]
-    data["value"] = sensordata["humidity"]
+    data["value"] = datadict["humidity"]
     writePost(data)
-    '''
+    
     # write pmtwofive
     data["obs_type"] = datatypemap["pmtwofive"]
     data["value"] = datadict["pmtwofive"]
@@ -225,9 +225,10 @@ POST response:  <Response [201]>
 
 
 # The http headers that will be sent with each POST
-headers = {'Content-Type': 'application/json'}
+headers = {'Content-Type': 'application/json','Authorization':'aljkhds(92@34lkj-sdf897;128H:HUW<HEHk'}
 # The url for the REST service
-endpointbase = 'http://node-express-env.quqvup2twn.us-east-2.elasticbeanstalk.com/'
+#endpointbase = 'http://node-express-env.quqvup2twn.us-east-2.elasticbeanstalk.com/'
+endpointbase = 'https://app.commons-faith.es/'
 # the url for the specific REST operation 
 endpoint = endpointbase + 'add_observation'
 
