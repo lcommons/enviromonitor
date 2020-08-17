@@ -93,16 +93,19 @@ def getdata():
 
 def writehtml():
    path = "/var/www/html/index.html"
-   
+   jsonPath = "/var/www/html/data.json"
    #data = getdata()
    getsensehatdata()
    getppmdata()
    gettempdata()
+   datadict["timestamp"] = datetime.now().isoformat()
+   with open(jsonPath,'w') as fp:
+      json.dump(datadict, fp)
    
    #print("getdata: ",data)
    newhtmlstring = htmlstring
    
-   newhtmlstring = newhtmlstring.replace("###datetime###",str(datetime.now()))
+   newhtmlstring = newhtmlstring.replace("###datetime###",str(datadict["timestamp"]))
    newhtmlstring = newhtmlstring.replace("###temp###",str(datadict["temp"]))
    newhtmlstring = newhtmlstring.replace("###temp2###",str(datadict["temp2"]))
    newhtmlstring = newhtmlstring.replace("###pressure###",str(datadict["pressure"]))
@@ -183,6 +186,7 @@ def writetoREST():
 	"sensor": 1,
 	"location": 1,
 	"value": 0#1.2
+#http://app.commons-faith.es/observations/
     }
     '''
     {'pressure': 1010.6982421875, 'temp': 92.24471817016601, 'humidity': 26.783153533935547, 'pmtwofive': 3.7, 'pmten': 5.6}
