@@ -45,3 +45,10 @@ The big question: if AWS is just providing emergency backups, how much/long can 
 1. A Raspberry Pi Zero with a simpe One-Wire temperature sensor, placed in each room to collect hyper-local temperature data.
 1. A Raspberry Pi Zero with a Temperature/Pressure/Humidity sensor for more specialized HVAC control. This might be used to regulate a HRV (heat recovery ventilation) system in a bathroom or for a house.
 1. A Raspberry Pi Zero with multiple One-Wire temperature sensors, used to monitor the incoming and ourgoing temperature of a heat exchanger, and control the pump/fan/circulator associated with it.
+1. Build out a Raspberry Pi Zero with a One-Wire temp senser.
+   - Load SqlLite and store observations locally
+   - with CRON, write periodic observations to AWS
+   - serve immediate observation
+   - serve a user-friendly page of current, recent, and historical data
+     - A rest service to serve all the data
+     - a web page with AJAX calls to retrieve data and refresh automatically
