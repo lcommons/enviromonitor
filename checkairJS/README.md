@@ -2,7 +2,7 @@
 
 ## Monitoring air quality with a Raspberry Pi
 
-This JavaScript reads air quality data from a Raspeberry pi and then...
+This JavaScript app reads air quality data from a Raspeberry pi and then...
 
 1. serves the data from a nodejs server
 1. writes the data to a cloud-based RESTful web service.
@@ -51,4 +51,4 @@ The big question: if AWS is just providing emergency backups, how much/long can 
    - serve immediate observation
    - serve a user-friendly page of current, recent, and historical data
      - A rest service to serve all the data
-     - a web page with AJAX calls to retrieve data and refresh automatically
+     - a web page using AJAX calls to retrieve data and refresh automatically
