@@ -1,0 +1,19 @@
+{
+  "name": "checkairjs",
+  "version": "1.0.0",
+  "description": "## Monitoring air quality with a Raspberry Pi",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ds18b20-raspi": "^0.3.5",
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.0"
+  }
+}

@@ -37,8 +37,14 @@ The big question: if AWS is just providing emergency backups, how much/long can 
      1. a description
      1. add date?
 1. A nodejs app that provides
+
    - a REST service for accessing the current and locally stored historical data for the sensors on this device.
+     `{"pressure": 1016.197509765625, "temp": 96.14827728271484, "humidity": 55.13484191894531, "pmtwofive": 2.5, "pmten": 7.1, "temp2": 71.15, "timestamp": "2020-08-17T08:25:03.834812"}`
+
    - a web app that provides human-friendly real time access to current and historical (local) data.
+
+1. a Sqlite database for local storage of observations.
+   - https://developerhowto.com/2018/12/29/build-a-rest-api-with-node-js-and-express-js/
 
 ### Use Cases
 
@@ -52,3 +58,25 @@ The big question: if AWS is just providing emergency backups, how much/long can 
    - serve a user-friendly page of current, recent, and historical data
      - A rest service to serve all the data
      - a web page using AJAX calls to retrieve data and refresh automatically
+1. A Heat Recovery Ventilator
+   - sits in the bathroom window. The window is open, but the box is sealed tightly.
+   - inside intake duct is a PVC pipe open up high to get steam
+   - inside exhaust is from the box
+   - outside intake and exhaust are PVC elbows pointed down to keep rain out
+   - an air filter before air gets into the exchanger
+   - two fans: one sucks inside air into the box. The second sucks in outside air and blows into the filter? But that puts the fan out in the cold.
+
+### data_types
+
+#### temp/humidity/pressure/ppm
+
+|----+----------+----------------------------------------------------------------------|
+| id | name | description |
+|----+----------+----------------------------------------------------------------------|
+| 1 | tempf | Temperature (fahrenheit) |
+| 2 | tempc | Temperature (celsius) |
+| 3 | humidity | Humidity |
+| 4 | pressure | Atmospheric Pressure |
+| 5 | pm2.5 | Particulate matter (smaller than 2.5 microns) concentration in mg/m3 |
+| 6 | pm10 | Particulate matter (smaller than 10 microns) concentration in mg/m3 |
+|----+----------+----------------------------------------------------------------------|
