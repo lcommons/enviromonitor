@@ -40,8 +40,8 @@ The big question: if AWS is just providing emergency backups, how much/long can 
 
    - a REST service for accessing the current and locally stored historical data for the sensors on this device.
      `{"pressure": 1016.197509765625, "temp": 96.14827728271484, "humidity": 55.13484191894531, "pmtwofive": 2.5, "pmten": 7.1, "temp2": 71.15, "timestamp": "2020-08-17T08:25:03.834812"}`
-
    - a web app that provides human-friendly real time access to current and historical (local) data.
+   - https://developerhowto.com/2018/12/29/build-a-rest-api-with-node-js-and-express-js/
 
 1. a Sqlite database for local storage of observations.
    - https://developerhowto.com/2018/12/29/build-a-rest-api-with-node-js-and-express-js/
@@ -49,6 +49,10 @@ The big question: if AWS is just providing emergency backups, how much/long can 
 ### Use Cases
 
 1. A Raspberry Pi Zero with a simpe One-Wire temperature sensor, placed in each room to collect hyper-local temperature data.
+   - https://www.circuitbasics.com/raspberry-pi-ds18b20-temperature-sensor-tutorial/#:~:text=The%20DS18B20%20temperature%20sensor%20is,accurate%20and%20take%20measurements%20quickly.
+   - https://www.circuitbasics.com/wp-content/uploads/2016/03/DS18B20-Datasheet.pdf
+   - https://www.npmjs.com/package/ds18b20-raspi
+   -
 1. A Raspberry Pi Zero with a Temperature/Pressure/Humidity sensor for more specialized HVAC control. This might be used to regulate a HRV (heat recovery ventilation) system in a bathroom or for a house.
 1. A Raspberry Pi Zero with multiple One-Wire temperature sensors, used to monitor the incoming and ourgoing temperature of a heat exchanger, and control the pump/fan/circulator associated with it.
 1. Build out a Raspberry Pi Zero with a One-Wire temp senser.
@@ -78,3 +82,27 @@ The big question: if AWS is just providing emergency backups, how much/long can 
 | 4   | pressure | Atmospheric Pressure                                                 |
 | 5   | pm2.5    | Particulate matter (smaller than 2.5 microns) concentration in mg/m3 |
 | 6   | pm10     | Particulate matter (smaller than 10 microns) concentration in mg/m3  |
+
+#### Locations
+
+| id  | label              |
+| --- | ------------------ |
+| 1   | living room window |
+| 2   | bedroom 1          |
+| 3   | bedroom 2          |
+| 4   | bathroom 1         |
+| 5   | bathroom 2         |
+| 6   | kitchen            |
+
+#### Sensors
+
+(Note: need to add a field for the 64-bit ID of each sensor)
+|id |label|
+|---|-----|
+|1| sensehat 2019-11-01
+|2| temp sensor DS18B20-1
+|3| temp sensor DS18B20-2
+|4| temp sensor DS18B20-3
+|5| temp sensor DS18B20-4
+|6| temp sensor DS18B20-5
+|7| temp sensor DS18B20-6
