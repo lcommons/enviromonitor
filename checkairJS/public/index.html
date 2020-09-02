@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <title>How are things</title>
+  </head>
+  <body onload="loadData()">
+    <header>Current Temperature</header>
+    <section id="content">Things are toasty</section>
+    <footer id="footer"></footer>
+  </body>
+  <script>
+    function loadData() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          let temp = JSON.parse(this.responseText).currentTemp;
+          document.getElementById("content").innerHTML = temp + "&deg;";
+          document.getElementById("footer").innerHTML =
+            "updated at " + getDate();
+        }
+      };
+      xhttp.open("GET", "/current/", true);
+      xhttp.send();
+    }
+
+    function getDate() {
+      let today = new Date();
+      let dateString = today.getFullYear();
+      dateString += "-";
+      //today.getMonth() < 10 ? (dateString += "0") : (dateString += "");
+      dateString += pad(today.getMonth() + 1);
+      dateString += "-";
+      //today.getDate() < 10 ? (dateString += "0") : (dateString += "");
+      dateString += pad(today.getDate());
+      dateString += "  ";
+      dateString += pad(today.getHours());
+      dateString += ":";
+      dateString += pad(today.getMinutes());
+      dateString += ":";
+      dateString += pad(today.getSeconds());
+
+      return dateString;
+    }
+
+    function pad(input) {
+      return input < 10 ? "0" + input : input;
+    }
+  </script>
+</html>
