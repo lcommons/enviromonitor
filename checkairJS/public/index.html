@@ -6,15 +6,32 @@
   </head>
   <body onload="loadData()">
     <header>Current Temperature</header>
-    <section id="content">Things are toasty</section>
+    <section id="waiting">Loading...</section>
+    <section id="content"></section>
     <footer id="footer"></footer>
   </body>
   <script>
+    let oneMinute = 60000; // milliseconds
+    let tenSeconds = 10000; // milliseconds
+    function autoRefresh_div() {
+      //$("#div").load("load.html", function() {
+      loadData();
+      setTimeout(autoRefresh_div, oneMinute);
+    }
+
+    autoRefresh_div();
+
     function loadData() {
+      document.getElementById("waiting").innerHTML = "Loading...";
+      document.getElementById("content").innerHTML = "";
+      document.getElementById("footer").innerHTML = "";
+
+      //document.getElementById("content").innerHTML = "loading..."; <-- SPINNER!!
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           let temp = JSON.parse(this.responseText).currentTemp;
+          document.getElementById("waiting").innerHTML = "";
           document.getElementById("content").innerHTML = temp + "&deg;";
           document.getElementById("footer").innerHTML =
             "updated at " + getDate();

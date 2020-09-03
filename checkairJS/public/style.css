@@ -17,7 +17,18 @@ header {
   flex-basis: auto
   */
 }
-section {
+#waiting {
+  color: goldenrod;
+  flex: 1 1 auto;
+  font-size: 10vh;
+  /* The above is shorthand for:
+    flex-grow: 1,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+#content {
   color: goldenrod;
   flex: 1 1 auto;
   font-size: 70vh;
