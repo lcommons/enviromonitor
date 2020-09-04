@@ -6,7 +6,7 @@ module.exports.getCurrentTempX = () => 62;
 
 module.exports.getCurrentTemp = () => {
   // const tempF = sensor.readSimpleF(1);
-  const tempF = sensor.readSimpleF();
+  const tempF = sensor.readSimpleF(1);
   console.log(`${tempF} degF`);
   return tempF;
 };

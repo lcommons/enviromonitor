@@ -106,3 +106,24 @@ The big question: if AWS is just providing emergency backups, how much/long can 
 |5| temp sensor DS18B20-4
 |6| temp sensor DS18B20-5
 |7| temp sensor DS18B20-6
+
+## Setup
+
+1. create user
+
+- sudo adduser airpixx
+- sudo adduser airpixx sudo
+- sudo passwd airpixx
+
+1. set up wifi
+
+- sudo raspi-config
+  - update hostname
+  - set wifi stuff
+
+1. install git
+   - sudo apt-get install git
+1. install nodejs
+   - sudo apt-get install nodejs
+1. install npm
+1. git clone stuff
