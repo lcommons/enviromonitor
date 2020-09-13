@@ -20,6 +20,8 @@ the sample content string and writes that to /var/www/html/index.html.
 
 Finally, a cron job runs writehtml every five minutes.
 */5 * * * *  python3 checkair.py
+or
+*/1 * * * *  python3 /home/airpi12/temp2json.py
 '''
 
 datadict = {};

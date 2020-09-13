@@ -2,6 +2,9 @@
 
 ## Monitoring air quality with a Raspberry Pi
 
+**EDIT: For enviromonitor running on Pi Zero, don't bother with Node.**
+**Just use the python3 app and lighttpd.**
+
 This JavaScript app reads air quality data from a Raspeberry pi and then...
 
 1. serves the data from a nodejs server
@@ -122,8 +125,32 @@ The big question: if AWS is just providing emergency backups, how much/long can 
   - set wifi stuff
 
 1. install git
-   - sudo apt-get install git
+   - sudo apt install git
 1. install nodejs
-   - sudo apt-get install nodejs
+   - sudo apt install nodejs
 1. install npm
-1. git clone stuff
+1. npm install express
+1. npm install --save ds18b20-raspi
+1. git clone https://github.com/lcommons/enviromonitor
+
+On one of the Pi Zeros I had to edit /boot/config.txt to add
+
+`dtoverlay=w1-gpio`
+
+See https://pinout.xyz/pinout/1_wire
+
+## to get node to start on reboot
+
+/etc/rc.local
+/full/path/to/myscript.js < /dev/null &
+
+-or-
+I think that placing the script in /etc/init.d was the right idea!
+
+Supposed that it was already set executable, the only thing missing was to actually register it with
+
+### run-node
+
+/usr/bin/node ./server.js < /dev/null &
+
+sudo update-rc.d /home/airpixx/enviromonitor/checkairJS/run-node
