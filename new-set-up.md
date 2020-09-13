@@ -54,9 +54,10 @@ or
   - `*/1 * * * * python3 /home/airpi11/temp2json.py`
 - copy updated index.html from airpi11 to airpi12
 - AIRPI
-  - disable old cron job
+  - ~~disable old cron job~~
   - copy temp2json.py
   - copy /var/www/html/\*
   - update title and header of index.html
   - crontab -e
   - `*/1 * * * * python3 /home/airpi/temp2json.py`
+  - modify checkair to write index2.html and data2.json
