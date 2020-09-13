@@ -102,7 +102,7 @@ def getdata():
 def writehtml():
     path = "/var/www/html/index2.html"
     jsonPath = "/var/www/html/data2.json"
-    #data = getdata()
+
     getsensehatdata()
     getppmdata()
     gettempdata()
