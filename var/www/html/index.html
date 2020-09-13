@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="style.css" />
+  <title>Bedroom #2</title>
+</head>
+
+<body onload="loadData()">
+  <header>Current Temperature</header>
+  <header>Bedroom #1</header>
+  <section id="waiting">Loading...</section>
+  <section id="content"></section>
+  <footer id="footer"></footer>
+</body>
+<script>
+  let oneMinute = 60000; // milliseconds
+  let tenSeconds = 10000; // milliseconds
+  function autoRefresh_div() {
+    //$("#div").load("load.html", function() {
+    loadData();
+  }
+
+  autoRefresh_div();
+
+  function loadData() {
+    document.getElementById("waiting").innerHTML = "Loading...";
+    document.getElementById("content").innerHTML = "";
+    document.getElementById("footer").innerHTML = "";
+
+    //document.getElementById("content").innerHTML = "loading..."; <-- SPINNER!!
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let temp = JSON.parse(this.responseText).temp2;
+        let timestamp = JSON.parse(this.responseText).timestamp;
+        document.getElementById("waiting").innerHTML = "";
+        document.getElementById("content").innerHTML = temp.toFixed(1) + "&deg;";
+        document.getElementById("footer").innerHTML =
+          "updated at " + getDate(timestamp);
+      }
+    };
+    xhttp.open("GET", "/data.json", true);
+    xhttp.send();
+  }
+
+  function getDate(input = "") {
+    let today = new Date(input);
+    let dateString = today.getFullYear();
+    dateString += "-";
+    //today.getMonth() < 10 ? (dateString += "0") : (dateString += "");
+    dateString += pad(today.getMonth() + 1);
+    dateString += "-";
+    //today.getDate() < 10 ? (dateString += "0") : (dateString += "");
+    dateString += pad(today.getDate());
+    dateString += "  ";
+    dateString += pad(today.getHours());
+    dateString += ":";
+    dateString += pad(today.getMinutes());
+    dateString += ":";
+    dateString += pad(today.getSeconds());
+
+    return dateString;
+  }
+
+  function pad(input) {
+    return input < 10 ? "0" + input : input;
+  }
+</script>
+
+</html>

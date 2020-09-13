@@ -29,7 +29,7 @@ Create cron job to run the script every minute
 
 or
 
-`*/1 * * * * python3 /home/airpi12/temp2json.py`
+`*/1 * * * * python3 /home/airpi11/temp2json.py`
 
 2020-09-12
 
@@ -38,3 +38,25 @@ or
 - updated crontab to run this new file.
 - I deleted all the other enviromonitor stuff.
 - Copied webpage and css to /var/www/html
+
+2020-09-13
+
+- updated airpi12 index.html to include room label
+- updated temp2json to read onewire sensore directly, not import another file.
+- copy from airpi12 to chromebook
+  $ scp airpi12@192.168.0.162:/home/airpi12/temp2json.py .
+   $ scp airpi12@192.168.0.162:/var/www/html/\* .
+- copy /var/www/html/\* to airpi11
+- copy temp2json.py to airpi11
+- further edits and updates to index.html and temp2json.py
+- edit crontab on airpi11:
+  - crontab -e
+  - `*/1 * * * * python3 /home/airpi11/temp2json.py`
+- copy updated index.html from airpi11 to airpi12
+- AIRPI
+  - disable old cron job
+  - copy temp2json.py
+  - copy /var/www/html/\*
+  - update title and header of index.html
+  - crontab -e
+  - `*/1 * * * * python3 /home/airpi/temp2json.py`

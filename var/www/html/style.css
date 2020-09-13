@@ -1,0 +1,49 @@
+body {
+  background-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  height: 100%;
+}
+header {
+  color: limegreen;
+  align-content: center;
+  flex: 0 1 auto;
+  font-size: 10vh;
+  /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+}
+#waiting {
+  color: goldenrod;
+  flex: 1 1 auto;
+  font-size: 10vh;
+  /* The above is shorthand for:
+    flex-grow: 1,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+#content {
+  color: goldenrod;
+  flex: 1 1 auto;
+  font-size: 70vh;
+  /* The above is shorthand for:
+    flex-grow: 1,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+footer {
+  flex: 0 1 auto;
+  font-size: 3vh;
+  color: wheat;
+  /*background-color: slategray;*/
+}
+p {
+  color: red;
+}
