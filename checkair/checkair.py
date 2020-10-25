@@ -1,10 +1,11 @@
-import pymysql
+#import pymysql
 import serial
 import json
 import requests
 from datetime import datetime
 from sense_hat import SenseHat
 import checktemp
+import paho.mqtt.client as mqtt
 
 '''
 This file runs on a raspberry pi with a sense hat AND an air quality sensor.
@@ -25,22 +26,24 @@ or
 '''
 
 datadict = {}
-
-
+'''
+# 2020-10-23 errors trying to initialize senseHat pressure and humidity;
+# senseHat temp seems to work... but I don't need that.
+# SOoooo... I'm eliminating Sense Hat for now.
 def getsensehatdata():
     sense = SenseHat()
     sense.clear()
-    pressure = sense.get_pressure()
+    #lhc 2020-10-23 pressure = sense.get_pressure()
     temp = sense.get_temperature()
     temp = 9.0/5.0 * temp + 32
     humidity = sense.get_humidity()
     #print("humidity: ", humidity)
     #print("temp : ", temp)
     #print("pressure: ", pressure)
-    datadict["pressure"] = pressure
+    #lhc 2020-10-23 datadict["pressure"] = pressure
     datadict["temp"] = temp
     datadict["humidity"] = humidity
-
+'''
 
 def getppmdata():
     data = []
@@ -60,22 +63,24 @@ def getppmdata():
 def gettempdata(f=True):
     deg_c, deg_f = checktemp.read_temp()
     if (f):
-        datadict["temp2"] = deg_f
+        datadict["temp"] = deg_f
     else:
-        datadict["temp2"] = deg_c
+        datadict["temp"] = deg_c
 
 
 def getdata():
+    '''
+    Remove call to senseHat
     sense = SenseHat()
     sense.clear()
-    pressure = sense.get_pressure()
+    #lhc 2020-10-23 pressure = sense.get_pressure()
     temp = sense.get_temperature()
     temp = 9.0/5.0 * temp + 32
     humidity = sense.get_humidity()
     #print("humidity: ", humidity)
     #print("temp : ", temp)
     #print("pressure: ", pressure)
-
+    '''
     data = []
     ser = serial.Serial('/dev/ttyUSB0')
     for index in range(0, 10):
@@ -90,20 +95,19 @@ def getdata():
     #print("pmten: ", pmten)
 
     datadic = {}
-    datadic["pressure"] = pressure
-    datadic["temp"] = temp
-    datadic["humidity"] = humidity
+    #lhc 2020-10-23 datadic["pressure"] = pressure
+    #lhc 2020-10-23 datadic["temp"] = temp
+    #lhc 2020-10-23 datadic["humidity"] = humidity
     datadic["pmtwofive"] = pmtwofive
     datadic["pmten"] = pmten
 
     return datadic
 
-
 def writehtml():
     path = "/var/www/html/index2.html"
     jsonPath = "/var/www/html/data2.json"
 
-    getsensehatdata()
+    #lhc 2020-10-23 getsensehatdata()
     getppmdata()
     gettempdata()
     datadict["timestamp"] = datetime.now().isoformat()
@@ -116,13 +120,13 @@ def writehtml():
     newhtmlstring = newhtmlstring.replace(
         "###datetime###", str(datadict["timestamp"]))
     newhtmlstring = newhtmlstring.replace("###temp###", str(datadict["temp"]))
-    newhtmlstring = newhtmlstring.replace(
-        "###temp2###", str(datadict["temp2"]))
-    newhtmlstring = newhtmlstring.replace(
-        "###pressure###", str(datadict["pressure"]))
+    #lhc 2020-10-23 newhtmlstring = newhtmlstring.replace(
+    #lhc 2020-10-23     "###temp2###", str(datadict["temp2"]))
+    #lhc 2020-10-23 newhtmlstring = newhtmlstring.replace(
+    #lhc 2020-10-23     "###pressure###", str(datadict["pressure"]))
 #   newhtmlstring = newhtmlstring.replace("###pressure###", 'n/a')
-    newhtmlstring = newhtmlstring.replace(
-        "###humidity###", str(datadict["humidity"]))
+    #lhc 2020-10-23 newhtmlstring = newhtmlstring.replace(
+    #lhc 2020-10-23     "###humidity###", str(datadict["humidity"]))
 #   newhtmlstring = newhtmlstring.replace("###humidity###",'n/a')
     newhtmlstring = newhtmlstring.replace(
         "###pmtwofive###", str(datadict["pmtwofive"]))
@@ -134,12 +138,10 @@ def writehtml():
     homepage.write(newhtmlstring)
     homepage.close()
 
-
 htmlstring = "<html><head><title>Air Temp, Humidty, Pressure and Quality</title></head>\
 <body><h1>Air Temp, Humidty, Pressure and Quality</h1>\
 <table><tr><th>Date / Time</th><td>###datetime###</td></tr>\
 <tr><th>Temp (f)</th><td>###temp###</td></tr>\
-<tr><th>Temp 2 (f)</th><td>###temp2###</td></tr>\
 <tr><th>pressure</th><td>###pressure###</td></tr>\
 <tr><th>humidity</th><td>###humidity###</td></tr>\
 <tr><th>pmtwofive</th><td>###pmtwofive###</td></tr>\
@@ -169,7 +171,7 @@ def writetodb():
 
     # Fetch a single row using fetchone() method.
     data = cursor.fetchone()
-    print("one observation : %s " % data)
+    #print("one observation : %s " % data)
 
     # disconnect from server
     db.close()
@@ -195,8 +197,83 @@ datatypemap = {
     'pmtwofive': 5,
     'pmten': 6
 }
+'''
+#mosquitto_pub -h "$broker" -p 1883 -t "$topic" -m 
+"{\"timestamp\":\"$timestamp\",\"hostname\":\"$HOSTNAME\",\"ip\":\"$ipaddr\",\"location\":12,\"type\":1,\"value\":$values}"
+'''
 
+# The callback function. It will be triggered when trying to connect to the MQTT broker
+# client is the client instance connected this time
+# userdata is users' information, usually empty. If it is needed, you can set it through user_data_set function.
+# flags save the dictionary of broker response flag.
+# rc is the response code.
+# Generally, we only need to pay attention to whether the response code is 0.
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        x=0
+        #print("Connected success")
+    else:
+        x=1
+        #print(f"Connected fail with code {rc}")
+        
+broker="192.168.0.110"
+topic="observation/livingroom/temperature"
+ip="192.168.0.176"
+hostname="airpi"
 
+client = mqtt.Client()
+client.on_connect = on_connect
+client.connect(broker, 1883, 60)
+
+def publishMqtt(jsondata):
+    # "{\"timestamp\":\"$timestamp\",\"hostname\":\"{hostname}\",\"ip\":\"{ip}\",\"location\":12,\"type\":1,\"value\":$values}"
+    message = "{\"timestamp\":\""\
+        f"{jsondata['add_date']}"\
+        "\",\"hostname\":\""\
+        f"{hostname}"\
+        "\",\"ip\":\""\
+        f"{ip}"\
+        "\",\"location\":"\
+        f"{jsondata['location']}"\
+        ",\"type\":"\
+        f"{jsondata['obs_type']}"\
+        ",\"value\":"\
+        f"{jsondata['value']}"\
+        "}"
+
+    #print(message)
+    client.publish(topic, payload=message, qos=0, retain=False)
+
+def writetoMqtt():
+    data = {
+        "add_date": '',  # "2019-11-24T23:20:05.88Z",
+        "obs_type": 6,
+        "sensor": 1,
+        "location": 1,
+        "value": 0  # 1.2
+        # http://app.commons-faith.es/observations/
+    }
+
+    getppmdata()
+    gettempdata()
+
+    # write temp from external temp sensor
+    data["add_date"] = str(datetime.now().isoformat())
+    data["sensor"] = 2  # the external temp sensor
+    data["obs_type"] = datatypemap["tempf"]
+    data["value"] = datadict['temp']  # gettemp()#sensordata["temp"]
+    publishMqtt(data)
+    
+    # write pmtwofive
+    data["obs_type"] = datatypemap["pmtwofive"]
+    data["value"] = datadict["pmtwofive"]
+    publishMqtt(data)
+    
+    # write pmten
+    data["obs_type"] = datatypemap["pmten"]
+    data["value"] = datadict["pmten"]
+    publishMqtt(data)
+    
 def writetoREST():
     data = {
         "add_date": '',  # "2019-11-24T23:20:05.88Z",
@@ -211,7 +288,7 @@ def writetoREST():
 POST response:  <Response [201]>
     '''
     #sensordata = getdata()
-    getsensehatdata()
+    #lhc 2020-10-23 getsensehatdata()
     getppmdata()
     gettempdata()
 
@@ -219,7 +296,7 @@ POST response:  <Response [201]>
     data["add_date"] = str(datetime.now())
     data["sensor"] = 2  # the external temp sensor
     data["obs_type"] = datatypemap["tempf"]
-    data["value"] = datadict['temp2']  # gettemp()#sensordata["temp"]
+    data["value"] = datadict['temp']  # gettemp()#sensordata["temp"]
     writePost(data)
 
     # write temp from sensehat
@@ -229,13 +306,13 @@ POST response:  <Response [201]>
     writePost(data)
 
     # write pressure
-    data["obs_type"] = datatypemap["pressure"]
-    data["value"] = datadict["pressure"]
+    #lhc 2020-10-23 data["obs_type"] = datatypemap["pressure"]
+    #lhc 2020-10-23 data["value"] = datadict["pressure"]
     writePost(data)
     # write humidity
-    data["obs_type"] = datatypemap["humidity"]
-    data["value"] = datadict["humidity"]
-    writePost(data)
+    #lhc 2020-10-23 data["obs_type"] = datatypemap["humidity"]
+    #lhc 2020-10-23 data["value"] = datadict["humidity"]
+    #lhc 2020-10-23 writePost(data)
 
     # write pmtwofive
     data["obs_type"] = datatypemap["pmtwofive"]
@@ -262,7 +339,7 @@ def writePost(jsondata):
     writes the jsondata values to the REST service
     '''
     response = requests.post(endpoint, headers=headers, json=jsondata)
-    print('POST response: ', response)
+    #print('POST response: ', response)
     return response
 
 
@@ -281,5 +358,6 @@ if __name__ == '__main__':
     # but I don't care.
     writehtml()
     writetoREST()
+    writetoMqtt()
     # gettemp()
     # print(checktemp.read_temp())
