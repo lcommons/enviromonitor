@@ -233,6 +233,8 @@ def publishMqtt(jsondata):
         f"{hostname}"\
         "\",\"ip\":\""\
         f"{ip}"\
+        "\",\"sensor\":\""\
+        f"{jsondata['sensor']}"\
         "\",\"location\":"\
         f"{jsondata['location']}"\
         ",\"type\":"\
@@ -248,7 +250,7 @@ def writetoMqtt():
     data = {
         "add_date": '',  # "2019-11-24T23:20:05.88Z",
         "obs_type": 6,
-        "sensor": 1,
+        "sensor": "",
         "location": 1,
         "value": 0  # 1.2
         # http://app.commons-faith.es/observations/
@@ -259,17 +261,19 @@ def writetoMqtt():
 
     # write temp from external temp sensor
     data["add_date"] = str(datetime.now().isoformat())
-    data["sensor"] = 2  # the external temp sensor
+    data["sensor"] = "28-01144c5d43aa"  # the external temp sensor
     data["obs_type"] = datatypemap["tempf"]
     data["value"] = datadict['temp']  # gettemp()#sensordata["temp"]
     publishMqtt(data)
     
     # write pmtwofive
+    data["sensor"] = ""
     data["obs_type"] = datatypemap["pmtwofive"]
     data["value"] = datadict["pmtwofive"]
     publishMqtt(data)
     
     # write pmten
+    data["sensor"] = ""
     data["obs_type"] = datatypemap["pmten"]
     data["value"] = datadict["pmten"]
     publishMqtt(data)
@@ -357,7 +361,7 @@ if __name__ == '__main__':
     # note that each write*** function will make its own getdata() call
     # but I don't care.
     writehtml()
-    writetoREST()
+    # writetoREST()
     writetoMqtt()
     # gettemp()
     # print(checktemp.read_temp())
