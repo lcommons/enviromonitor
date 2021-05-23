@@ -13,7 +13,7 @@ from datetime import datetime
 
 currentWeatherURL = 'http://w1.weather.gov/xml/current_obs/KPVD.xml'
 currentWeatherResponse = requests.get(currentWeatherURL)
-zipcode='02863'
+zipcode='02906'
 
 forecastURL = 'http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php?whichClient=NDFDgenByDayMultiZipCode&zipCodeList='+zipcode+'&format=12+hourly&numDays=2&Unit=e'
 
@@ -271,7 +271,8 @@ else:
     currentIcon = currentWeather
 
 #f = open('/home/pi/kindleServer/output.html','w')
-f = open('output.html','w')
+#f = open('output.html','w')
+f = open('/var/www/html/tablet.html','w')
 f.write("<html><head><title>Weather Forecast</title><link rel='stylesheet' type='text/css' href='kindle.css'><script type='text/javascript'>setInterval(function() {window.location.reload();}, 60*60000); //NOTE: period is passed in milliseconds</script><head><body>")
 f.write("<div id='current'><span id='current-temp' class='current-temp'>"+currentTemp+"&deg;<br/><span id='windchill'>("+currentWindchill+"&deg;)</span></span><span id='current-img'>" + currentIcon + "</span></div>")
 f.write("<div id='day1'><span class='period1' title='hello world'><div class='label'>"+period[0]['name']+ "</div>"+ period[0]['icon']+period[0]['chance'] +"<div class='temp'>"+period[0]['temp']+"&deg;</div></span>")

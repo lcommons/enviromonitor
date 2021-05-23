@@ -197,6 +197,16 @@ datatypemap = {
     'pmtwofive': 5,
     'pmten': 6
 }
+
+mqttTopicMap = {
+    'tempf' : 'observation/livingroom/temperature',
+    'tempc': 'observation/livingroom/temperature',
+    'humidity' : 'observation/livingroom/humidity',
+    'pressure' : 'observation/livingroom/pressure',
+    'pmtwofive': 'observation/livingroom/pmtwofive',
+    'pmten' : 'observation/livingroom/pmten',
+}
+
 '''
 #mosquitto_pub -h "$broker" -p 1883 -t "$topic" -m 
 "{\"timestamp\":\"$timestamp\",\"hostname\":\"$HOSTNAME\",\"ip\":\"$ipaddr\",\"location\":12,\"type\":1,\"value\":$values}"
@@ -216,9 +226,9 @@ def on_connect(client, userdata, flags, rc):
         x=1
         #print(f"Connected fail with code {rc}")
         
-broker="192.168.0.110"
-topic="observation/livingroom/temperature"
-ip="192.168.0.176"
+broker="192.168.1.110"
+#topic="observation/livingroom/temperature"
+ip="192.168.1.176"
 hostname="airpi"
 
 client = mqtt.Client()
@@ -242,9 +252,9 @@ def publishMqtt(jsondata):
         ",\"value\":"\
         f"{jsondata['value']}"\
         "}"
-
+    
     #print(message)
-    client.publish(topic, payload=message, qos=0, retain=False)
+    client.publish(jsondata['topic'], payload=message, qos=0, retain=False)
 
 def writetoMqtt():
     data = {
@@ -264,18 +274,21 @@ def writetoMqtt():
     data["sensor"] = "28-01144c5d43aa"  # the external temp sensor
     data["obs_type"] = datatypemap["tempf"]
     data["value"] = datadict['temp']  # gettemp()#sensordata["temp"]
+    data["topic"] = mqttTopicMap['tempf']
     publishMqtt(data)
     
     # write pmtwofive
     data["sensor"] = ""
     data["obs_type"] = datatypemap["pmtwofive"]
     data["value"] = datadict["pmtwofive"]
+    data["topic"] = mqttTopicMap['pmtwofive']
     publishMqtt(data)
     
     # write pmten
     data["sensor"] = ""
     data["obs_type"] = datatypemap["pmten"]
     data["value"] = datadict["pmten"]
+    data["topic"] = mqttTopicMap['pmten']
     publishMqtt(data)
     
 def writetoREST():
