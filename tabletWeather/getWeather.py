@@ -272,7 +272,7 @@ else:
 
 #f = open('/home/pi/kindleServer/output.html','w')
 #f = open('output.html','w')
-f = open('/var/www/html/tablet.html','w')
+f = open('/var/www/html/tablet/index.html','w')
 f.write("<html><head><title>Weather Forecast</title><link rel='stylesheet' type='text/css' href='kindle.css'><script type='text/javascript'>setInterval(function() {window.location.reload();}, 60*60000); //NOTE: period is passed in milliseconds</script><head><body>")
 f.write("<div id='current'><span id='current-temp' class='current-temp'>"+currentTemp+"&deg;<br/><span id='windchill'>("+currentWindchill+"&deg;)</span></span><span id='current-img'>" + currentIcon + "</span></div>")
 f.write("<div id='day1'><span class='period1' title='hello world'><div class='label'>"+period[0]['name']+ "</div>"+ period[0]['icon']+period[0]['chance'] +"<div class='temp'>"+period[0]['temp']+"&deg;</div></span>")
