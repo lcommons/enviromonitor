@@ -15,12 +15,13 @@
 <script>
   let oneMinute = 60000; // milliseconds
   let tenSeconds = 10000; // milliseconds
-  function autoRefresh_div() {
-    //$("#div").load("load.html", function() {
-    loadData();
-  }
-
-  autoRefresh_div();
+  //function autoRefresh_div() {
+  //  //$("#div").load("load.html", function() {
+  //  loadData();
+  //}
+  //autoRefresh_div();
+  
+  setInterval(loadData, oneMinute);
 
   function loadData() {
     document.getElementById("waiting").innerHTML = "Loading...";
