@@ -31,7 +31,8 @@ header {
 #content {
   color: goldenrod;
   flex: 1 1 auto;
-  font-size: 70vh;
+  font-size: 15vw;
+        /*70vh;*/
   /* The above is shorthand for:
     flex-grow: 1,
     flex-shrink: 1,
