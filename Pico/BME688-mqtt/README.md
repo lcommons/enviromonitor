@@ -8,3 +8,6 @@ Without Thonny, it doesn't run... but maybe if I was more persistent and tried a
 TO DO
  - blink the LED at each startup milestone to provide minimal feedback on startup status
  - only use Pico with LCD since cant SSH or check status in any other way?
+ - IN A NEW PROJECT combine http service of heartbeat/status, JSON, web page
+ - in another new project, combine LCD, SD data persistance, HTTP, and MQTT
+    - this is seperate from the un-networked BME688/LCD/SD-card project.
