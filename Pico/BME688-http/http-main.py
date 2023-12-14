@@ -41,7 +41,7 @@ while True:
         #tempC = bme688.readTemperature()
         #pressure = bme688.readPressure()
         humidity = bme688.readHumidity()
-        response = '{"timestamp": na,'+'"temp": '+str(round(tempF,1))+','+' "humidity": '+str(round(humidity,1))+'}\r\n'
+        response = '{"timestamp": "na",'+'"temp2": '+str(round(tempF,1))+','+' "humidity": '+str(round(humidity,1))+'}\r\n'
     else:
         response = html 
 
