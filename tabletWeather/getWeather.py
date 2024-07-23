@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 
-currentWeatherURL = 'http://w1.weather.gov/xml/current_obs/KPVD.xml'
+currentWeatherURL = 'http://forecast.weather.gov/xml/current_obs/KPVD.xml'
 currentWeatherResponse = requests.get(currentWeatherURL)
 zipcode='02906'
 
